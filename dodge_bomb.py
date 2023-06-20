@@ -5,11 +5,11 @@ import random
 
 WIDTH, HEIGHT = 1600, 900
 
-def check_bound(rect: pg.rect) -> tuple[bool,bool]:
+def check_bound(rect: pg.rect) -> tuple[bool,bool]: #画面外に出た時の判定
     yoko,tate = True,True
-    if rect.left <= 10 or WIDTH <= rect.right:
+    if rect.left <= 0 or WIDTH <= rect.right: #縦の判定
         yoko = False
-    if rect.top <= 10 or HEIGHT <= rect.bottom:
+    if rect.top <= 0 or HEIGHT <= rect.bottom: #横の判定
         tate = False
     return yoko,tate
 
@@ -42,6 +42,9 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return    
+        if kk_rct.colliderect(enn_rct):
+            print("ゲームオーバー")
+            return #ゲームオーバー
         合計移動量 = [0,0] #練習3
         key_lst = pg.key.get_pressed()
         if key_lst[pg.K_UP]:合計移動量[1] -= 5
@@ -52,7 +55,8 @@ def main():
         kk_rct.move_ip(合計移動量[0],合計移動量[1])
 
         if check_bound(kk_rct) != (True,True):
-            kk_rct.move_ip(-合計移動量[0],-合計移動量[1])
+            kk_rct.move_ip(-合計移動量[0],-合計移動量[1]) 
+            #こうかとんの位置を更新前に戻す
 
         screen.blit(kk_img, kk_rct) 
         #こうかとんの移動処理
@@ -60,9 +64,9 @@ def main():
         # 円の移動処理
         yoko,tate = check_bound(enn_rct)
         if not yoko:
-            vx *= -1
+            vx *= -1 #横方向の速度を反転させる
         if not tate:
-            vy *= -1
+            vy *= -1 #縦方向の速度を反転させる
         screen.blit(enn,enn_rct)
         # 円の描画
         pg.display.update()
