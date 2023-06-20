@@ -5,6 +5,7 @@ import random
 
 WIDTH, HEIGHT = 1600, 900
 
+
 def check_bound(rect: pg.rect) -> tuple[bool,bool]: #画面外に出た時の判定
     yoko,tate = True,True
     if rect.left <= 0 or WIDTH <= rect.right: #縦の判定
@@ -13,12 +14,28 @@ def check_bound(rect: pg.rect) -> tuple[bool,bool]: #画面外に出た時の判
         tate = False
     return yoko,tate
 
+tori_ls = []
+
+for i in range(3):
+    tori = pg.image.load("ex02/fig/3.png")
+    aaa = pg.transform.rotozoom(tori,45-45*i,2.0)
+    tori_ls.append(aaa)
+
+for j in range(5):
+    tori_b = pg.transform.flip(tori,True,False)
+    bbb = pg.transform.rotozoom(tori_b,-90+45*j,2.0)
+    tori_ls.append(bbb)
+
+muki_jisho = {(-5,5):tori_ls[0],(-5,0):tori_ls[1],(-5,-5):tori_ls[2],
+              (0,5):tori_ls[3],(5,5):tori_ls[4],(5,0):tori_ls[5],
+              (5,-5):tori_ls[6],(0,-5):tori_ls[7]}
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
-    kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
+    kk_img = pg.transform.rotozoom(kk_img, 0, 0)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 900,400
     clock = pg.time.Clock()
@@ -46,11 +63,23 @@ def main():
             print("ゲームオーバー")
             return #ゲームオーバー
         合計移動量 = [0,0] #練習3
+        kk_muki = [-5,0]
         key_lst = pg.key.get_pressed()
-        if key_lst[pg.K_UP]:合計移動量[1] -= 5
-        if key_lst[pg.K_DOWN]:合計移動量[1] += 5  #キー押下時の処理
-        if key_lst[pg.K_LEFT]:合計移動量[0] -= 5
-        if key_lst[pg.K_RIGHT]:合計移動量[0] += 5
+        if key_lst[pg.K_UP]:
+            合計移動量[1] -= 5
+            kk_muki[0] = 0
+            kk_muki[1] = -5
+        if key_lst[pg.K_DOWN]:
+            合計移動量[1] += 5
+            kk_muki[0] = 0
+            kk_muki[1] = 5   #キー押下時の処理
+        if key_lst[pg.K_LEFT]:
+            合計移動量[0] -= 5
+            kk_muki[0] = -5
+        if key_lst[pg.K_RIGHT]:
+            合計移動量[0] += 5
+            kk_muki[0] = 5
+        kk_muki_t = tuple(kk_muki)
         screen.blit(bg_img, [0, 0])
         kk_rct.move_ip(合計移動量[0],合計移動量[1])
 
@@ -58,7 +87,7 @@ def main():
             kk_rct.move_ip(-合計移動量[0],-合計移動量[1]) 
             #こうかとんの位置を更新前に戻す
 
-        screen.blit(kk_img, kk_rct) 
+        screen.blit(muki_jisho[kk_muki_t], kk_rct) 
         #こうかとんの移動処理
         enn_rct.move_ip(vx,vy)
         # 円の移動処理
