@@ -14,20 +14,20 @@ def check_bound(rect: pg.rect) -> tuple[bool,bool]: #画面外に出た時の判
         tate = False
     return yoko,tate
 
-tori_ls = []
+tori_ls = [] 
 
 for i in range(3):
     tori = pg.image.load("ex02/fig/3.png")
     aaa = pg.transform.rotozoom(tori,45-45*i,2.0)
     tori_ls.append(aaa)
-
+                                                       #こうかとんの向き
 for j in range(5):
     tori_b = pg.transform.flip(tori,True,False)
     bbb = pg.transform.rotozoom(tori_b,-90+45*j,2.0)
     tori_ls.append(bbb)
 
 muki_jisho = {(-5,5):tori_ls[0],(-5,0):tori_ls[1],(-5,-5):tori_ls[2],
-              (0,5):tori_ls[3],(5,5):tori_ls[4],(5,0):tori_ls[5],
+              (0,5):tori_ls[3],(5,5):tori_ls[4],(5,0):tori_ls[5],     #こうかとんの向きの辞書
               (5,-5):tori_ls[6],(0,-5):tori_ls[7]}
 
 def main():
@@ -36,6 +36,7 @@ def main():
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 0)
+    naki_img = pg.image.load("ex02/fig/8.png")
     kk_rct = kk_img.get_rect()
     kk_rct.center = 900,400
     clock = pg.time.Clock()
@@ -58,26 +59,28 @@ def main():
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
-                return    
-        if kk_rct.colliderect(enn_rct):
+                return  
+              
+        if kk_rct.colliderect(enn_rct): #練習5
             print("ゲームオーバー")
-            return #ゲームオーバー
+            return       #ゲームオーバー
+        
         合計移動量 = [0,0] #練習3
         kk_muki = [-5,0]
         key_lst = pg.key.get_pressed()
         if key_lst[pg.K_UP]:
-            合計移動量[1] -= 5
+            合計移動量[1] = -5
             kk_muki[0] = 0
             kk_muki[1] = -5
         if key_lst[pg.K_DOWN]:
-            合計移動量[1] += 5
+            合計移動量[1] = 5
             kk_muki[0] = 0
             kk_muki[1] = 5   #キー押下時の処理
         if key_lst[pg.K_LEFT]:
-            合計移動量[0] -= 5
+            合計移動量[0] = -5
             kk_muki[0] = -5
         if key_lst[pg.K_RIGHT]:
-            合計移動量[0] += 5
+            合計移動量[0] = 5
             kk_muki[0] = 5
         kk_muki_t = tuple(kk_muki)
         screen.blit(bg_img, [0, 0])
