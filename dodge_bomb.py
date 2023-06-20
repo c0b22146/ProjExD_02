@@ -41,7 +41,7 @@ def main():
     kk_rct.center = 900,400
     clock = pg.time.Clock()
     tmr = 0
-    gameover = 1000
+    gameover = 40
     gameover_time = 0
 
     vx = 5 # 横方向速度 # 練習2
@@ -63,11 +63,6 @@ def main():
             if event.type == pg.QUIT: 
                 return  
         gameover += gameover_time
-        if kk_rct.colliderect(enn_rct): # 練習5
-            print("ゲームオーバー")
-        if gameover <= 0:
-            return                # ゲームオーバー
-        
         key_lst = pg.key.get_pressed()
         合計移動量 = [0,0] # 練習3
         kk_muki = [-5,0]
@@ -98,6 +93,10 @@ def main():
 
         else:
             screen.blit(muki_jisho[kk_muki_t], kk_rct) 
+
+        if gameover == 0: 
+            print("ゲームオーバー")
+            return
         
         # こうかとんの移動処理
         enn_rct.move_ip(vx,vy)
