@@ -14,6 +14,9 @@ def main():
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
     clock = pg.time.Clock()
     tmr = 0
+    vx = 5 #横方向速度 #練習2
+    vy = 5 #縦方向速度
+
     enn = pg.Surface((20,20)) #練習1
     pg.draw.circle(enn,(255,0,0),(10,10),10)
     enn.set_colorkey((0,0,0))
@@ -31,6 +34,8 @@ def main():
                 return
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, [900, 400])
+        enn_rct.move_ip(vx,vy)
+        # 円の移動処理
         screen.blit(enn,enn_rct)
         # 円の描画
         pg.display.update()
