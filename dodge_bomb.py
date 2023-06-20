@@ -12,10 +12,15 @@ def main():
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
+    kk_rct = kk_img.get_rect()
+    kk_rct.center = 900,400
     clock = pg.time.Clock()
     tmr = 0
+
     vx = 5 #横方向速度 #練習2
     vy = 5 #縦方向速度
+
+    合計移動量 = [0,0] #練習3
 
     enn = pg.Surface((20,20)) #練習1
     pg.draw.circle(enn,(255,0,0),(10,10),10)
@@ -32,8 +37,16 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
+        key_lst = pg.key.get_pressed()
+        if key_lst[pg.K_UP]:合計移動量[1] -= 5
+        if key_lst[pg.K_DOWN]:合計移動量[1] += 5  #キー押下時の処理
+        if key_lst[pg.K_LEFT]:合計移動量[0] -= 5
+        if key_lst[pg.K_RIGHT]:合計移動量[0] += 5    
+
         screen.blit(bg_img, [0, 0])
-        screen.blit(kk_img, [900, 400])
+        kk_rct.move_ip(合計移動量[0],合計移動量[1])
+        screen.blit(kk_img, kk_rct) 
+        #こうかとんの移動処理
         enn_rct.move_ip(vx,vy)
         # 円の移動処理
         screen.blit(enn,enn_rct)
