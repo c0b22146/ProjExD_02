@@ -5,6 +5,13 @@ import random
 
 WIDTH, HEIGHT = 1600, 900
 
+def check_bound(rect: pg.rect) -> tuple[bool,bool]:
+    yoko,tate = True,True
+    if rect.left <= 10 or WIDTH <= rect.right:
+        yoko = False
+    if rect.top <= 10 or HEIGHT <= rect.bottom:
+        tate = False
+    return yoko,tate
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -20,8 +27,6 @@ def main():
     vx = 5 #横方向速度 #練習2
     vy = 5 #縦方向速度
 
-    合計移動量 = [0,0] #練習3
-
     enn = pg.Surface((20,20)) #練習1
     pg.draw.circle(enn,(255,0,0),(10,10),10)
     enn.set_colorkey((0,0,0))
@@ -36,24 +41,34 @@ def main():
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
-                return
+                return    
+        合計移動量 = [0,0] #練習3
         key_lst = pg.key.get_pressed()
         if key_lst[pg.K_UP]:合計移動量[1] -= 5
         if key_lst[pg.K_DOWN]:合計移動量[1] += 5  #キー押下時の処理
         if key_lst[pg.K_LEFT]:合計移動量[0] -= 5
-        if key_lst[pg.K_RIGHT]:合計移動量[0] += 5    
-
+        if key_lst[pg.K_RIGHT]:合計移動量[0] += 5
         screen.blit(bg_img, [0, 0])
         kk_rct.move_ip(合計移動量[0],合計移動量[1])
+
+        if check_bound(kk_rct) != (True,True):
+            kk_rct.move_ip(-合計移動量[0],-合計移動量[1])
+
         screen.blit(kk_img, kk_rct) 
         #こうかとんの移動処理
         enn_rct.move_ip(vx,vy)
         # 円の移動処理
+        yoko,tate = check_bound(enn_rct)
+        if not yoko:
+            vx *= -1
+        if not tate:
+            vy *= -1
         screen.blit(enn,enn_rct)
         # 円の描画
         pg.display.update()
         tmr += 1
-        clock.tick(10)
+        clock.tick(100)
+
 
 if __name__ == "__main__":
     pg.init()
