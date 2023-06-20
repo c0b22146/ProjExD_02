@@ -7,9 +7,9 @@ WIDTH, HEIGHT = 1600, 900
 
 def check_bound(rect: pg.rect) -> tuple[bool,bool]: # 画面外に出た時の判定
     yoko,tate = True,True
-    if rect.left <= 0 or WIDTH <= rect.right: # 縦の判定
+    if rect.left < 0 or WIDTH < rect.right: # 縦の判定
         yoko = False
-    if rect.top <= 0 or HEIGHT <= rect.bottom: # 横の判定
+    if rect.top < 0 or HEIGHT < rect.bottom: # 横の判定
         tate = False
     return yoko,tate
 
@@ -34,12 +34,15 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
-    kk_img = pg.transform.rotozoom(kk_img, 0, 0)
+    kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
     naki_img = pg.image.load("ex02/fig/8.png")
+    naki_img = pg.transform.rotozoom(naki_img,0,2.0)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 900,400
     clock = pg.time.Clock()
     tmr = 0
+    gameover = 1000
+    gameover_time = 0
 
     vx = 5 # 横方向速度 # 練習2
     vy = 5 # 縦方向速度
@@ -59,14 +62,15 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return  
-              
+        gameover += gameover_time
         if kk_rct.colliderect(enn_rct): # 練習5
             print("ゲームオーバー")
-            return       # ゲームオーバー
+        if gameover <= 0:
+            return                # ゲームオーバー
         
+        key_lst = pg.key.get_pressed()
         合計移動量 = [0,0] # 練習3
         kk_muki = [-5,0]
-        key_lst = pg.key.get_pressed()
         if key_lst[pg.K_UP]:
             合計移動量[1] = -5
             kk_muki[0] = 0
@@ -88,8 +92,13 @@ def main():
         if check_bound(kk_rct) != (True,True):
             kk_rct.move_ip(-合計移動量[0],-合計移動量[1]) 
             # こうかとんの位置を更新前に戻す
+        if kk_rct.colliderect(enn_rct):
+            screen.blit(naki_img,kk_rct)
+            gameover_time = -1
 
-        screen.blit(muki_jisho[kk_muki_t], kk_rct) 
+        else:
+            screen.blit(muki_jisho[kk_muki_t], kk_rct) 
+        
         # こうかとんの移動処理
         enn_rct.move_ip(vx,vy)
         # 円の移動処理
